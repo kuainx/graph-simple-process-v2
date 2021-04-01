@@ -1,0 +1,42 @@
+{
+  "width": 1334,
+  "height": 1334,
+  "thumb": "/api/cdn/c740/1.png",
+  "layer": [
+    {
+      "type": "staticImage",
+      "x": 0,
+      "y": 0,
+      "width": 1334,
+      "height": 1334,
+      "url": "/api/cdn/c740/1.png"
+    },
+    {
+      "type": "userImage",
+      "x": 923,
+      "y": 812,
+      "height": 330,
+      "width": 330,
+      "radius": [
+        115,
+        115,
+        115,
+        115
+      ]
+    },
+    {
+      "type": "for",
+      "num": 5,
+      "delta": {
+        "x": 3
+      },
+      "item": {
+        "type": "userImage",
+        "x": 923,
+        "y": 812,
+        "height": 330,
+        "width": 330
+      }
+    }
+  ]
+}
