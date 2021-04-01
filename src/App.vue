@@ -48,7 +48,7 @@ export default {
 
 <style scoped>
 .container {
-  margin: 100px;
+  margin: max(100px, 10%);
 }
 
 .content {

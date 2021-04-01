@@ -1,5 +1,5 @@
 <template>
-  <el-row>
+  <!-- <el-row>
     <el-col :span="6"><img class="thumb" :src="template.thumb" alt=""></el-col>
     <el-col :span="18">
       <div class="user-block" v-for="(item ,index) in userFilter" :key="index">
@@ -27,33 +27,46 @@
         <el-button type="primary" @click="confirmImage">确 定</el-button>
       </span>
     </template>
-  </el-dialog>
+  </el-dialog> -->
+  <div>
+    <img :src="preview" alt="" class="preview">
+  </div>
 </template>
 
 <script>
 import { reactive, toRefs } from 'vue'
 import { ElNotification } from 'element-plus'
 import { Blob2DataUrl } from '@/utils/blob'
+import { getPreview } from '@/utils/render'
 
 export default {
   name: 'Step2',
   props: ['template'],
   emits: ['next'],
   setup (props, { emit }) {
+    ElNotification({
+      title: '提示',
+      message: '正在生成预览',
+      type: 'success'
+    })
     const state = reactive({
       template: props.template,
-      userFilter: [],
+      preview: 'https://cdn.jsdelivr.net/gh/kuainx/cdn@master/wallpaper/Tomori_Nao/1.jpg',
+      // userFilter: [],
       userImage: '',
       dialogVisible: false,
       confirmImage: null
     })
-    for (const key in state.template.layer) {
-      const item = state.template.layer[key]
-      if (item.type === 'userImage') {
-        item._key = key
-        state.userFilter.push(item)
-      }
-    }
+    setTimeout(async () => {
+      state.preview = await getPreview(state.template)
+    })
+    // for (const key in state.template.layer) {
+    //   const item = state.template.layer[key]
+    //   if (item.type === 'userImage') {
+    //     item._key = key
+    //     state.userFilter.push(item)
+    //   }
+    // }
     const confirmUserConfig = () => {
       for (const key in state.userFilter) {
         if (!state.userFilter[key].data) {
@@ -111,5 +124,9 @@ export default {
 .userImg {
   max-width: 100%;
   max-height: 200px;
+}
+
+.preview {
+  width: 100%;
 }
 </style>
