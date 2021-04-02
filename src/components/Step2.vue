@@ -1,100 +1,64 @@
 <template>
-  <!-- <el-row>
-    <el-col :span="6"><img class="thumb" :src="template.thumb" alt=""></el-col>
-    <el-col :span="18">
-      <div class="user-block" v-for="(item ,index) in userFilter" :key="index">
-        <span>{{ item.name }}</span>
-        <el-upload :auto-upload="false" drag action="" :multiple="false" :show-file-list="false" :onChange="onFileSelected(item._key)">
-          <i class="el-icon-picture"></i>
-          <div class="el-upload__text">将文件拖到此处，或<em>点击选择文件</em></div>
-          <template #tip>
-            <div class="el-upload__tip">
-              请导入图片文件
-              <el-button v-if="item.data" type="success" size="mini" icon="el-icon-check" circle></el-button>
-            </div>
-          </template>
-        </el-upload>
-      </div>
-    </el-col>
-  </el-row>
-  <el-button style="margin: 20px;" type="primary" round @click="confirmUserConfig">下一步</el-button>
-  <el-dialog title="提示" v-model="dialogVisible" width="30%">
-    <div>确认选择该图片吗？</div>
-    <img class="userImg" :src="userImage" alt="">
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="confirmImage">确 定</el-button>
-      </span>
-    </template>
-  </el-dialog> -->
   <div>
-    <img :src="preview" alt="" class="preview">
+    <el-button type="primary" @click="confirmUserConfig" round class="next-btn">完成</el-button>
   </div>
+  <div>
+    <img :src="preview" alt="" class="preview" @click="imageClickHandler" />
+  </div>
+  <ImageSelector v-if="dialogVisible" :layerDat="layerDat" @cancel="dialogVisible=false" @success="selectorHandler" />
 </template>
 
 <script>
 import { reactive, toRefs } from 'vue'
 import { ElNotification } from 'element-plus'
-import { Blob2DataUrl } from '@/utils/blob'
+import { getImageDOM } from '@/utils/blob'
 import { getPreview } from '@/utils/render'
+import ImageSelector from './ImageSelector'
+import { getClickLayer } from '@/utils/template'
 
 export default {
   name: 'Step2',
   props: ['template'],
   emits: ['next'],
+  components: { ImageSelector },
   setup (props, { emit }) {
-    ElNotification({
-      title: '提示',
-      message: '正在生成预览',
-      type: 'success'
-    })
     const state = reactive({
       template: props.template,
       preview: 'https://cdn.jsdelivr.net/gh/kuainx/cdn@master/wallpaper/Tomori_Nao/1.jpg',
-      // userFilter: [],
       userImage: '',
       dialogVisible: false,
-      confirmImage: null
+      confirmImage: null,
+      layerDat: null
     })
-    setTimeout(async () => {
+    const reloadPreview = async () => {
+      ElNotification({
+        title: '提示',
+        message: '正在生成预览',
+        type: 'success'
+      })
       state.preview = await getPreview(state.template)
-    })
-    // for (const key in state.template.layer) {
-    //   const item = state.template.layer[key]
-    //   if (item.type === 'userImage') {
-    //     item._key = key
-    //     state.userFilter.push(item)
-    //   }
-    // }
+    }
+    setTimeout(reloadPreview)
     const confirmUserConfig = () => {
-      for (const key in state.userFilter) {
-        if (!state.userFilter[key].data) {
-          ElNotification.error({
-            title: '错误',
-            message: state.userFilter[key].name + '未完成'
-          })
-          return
-        }
-      }
       emit('next', state.template)
     }
-    const onFileSelected = index => {
-      return function (file) {
-        inputFile(index, file)
+    const imageClickHandler = e => {
+      const x = e.offsetX / e.target.offsetWidth * state.template.width
+      const y = e.offsetY / e.target.offsetHeight * state.template.height
+      const layerId = getClickLayer(state.template.imageArea, x, y)
+      if (layerId !== -1) {
+        state.layerDat = state.template.layer[layerId]
+        state.dialogVisible = true
       }
     }
-    const inputFile = async (index, file) => {
-      console.log(index, file)
-      state.userImage = await Blob2DataUrl(file.raw)
-      state.confirmImage = () => {
-        state.template.layer[index].data = state.userImage
-        state.dialogVisible = false
-      }
-      state.dialogVisible = true
+    const selectorHandler = async e => {
+      state.layerDat.placeholder = false
+      state.layerDat.img = await getImageDOM(e)
+      reloadPreview()
     }
     return {
-      onFileSelected,
+      selectorHandler,
+      imageClickHandler,
       confirmUserConfig,
       ...toRefs(state)
     }
@@ -103,30 +67,12 @@ export default {
 </script>
 
 <style scoped>
-.thumb {
-  width: 100%;
-}
-
-.el-icon-picture {
-  font-size: 67px;
-  color: #c0c4cc;
-  margin: 40px 0 16px;
-  line-height: 50px;
-}
-
-.user-block {
-  margin: 0 30px;
-  padding: 5px;
-  border: 2px #888 dashed;
-  border-radius: 10px;
-}
-
-.userImg {
-  max-width: 100%;
-  max-height: 200px;
-}
-
 .preview {
   width: 100%;
+  border: #66ccff 2px dashed;
+}
+
+.next-btn {
+  margin: 20px;
 }
 </style>

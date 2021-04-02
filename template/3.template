@@ -1,0 +1,64 @@
+{
+  "width": 2200,
+  "height": 1485,
+  "thumb": "http://demo.ekuai.tech/cdn/31e7/1.png",
+  "layer": [
+    {
+      "type": "userImage",
+      "x": 26,
+      "y": 34.7,
+      "height": 470,
+      "width": 470
+    },
+    {
+      "type": "for",
+      "num": 8,
+      "delta": {
+        "x": 261
+      },
+      "item": {
+        "type": "userImage",
+        "x": 69.71,
+        "y": 590,
+        "height": 403,
+        "width": 230
+      }
+    },
+    {
+      "type": "for",
+      "num": 8,
+      "delta": {
+        "x": 261
+      },
+      "item": {
+        "type": "userImage",
+        "x": 69.71,
+        "y": 1029,
+        "height": 403,
+        "width": 230
+      }
+    },
+    {
+      "type": "for",
+      "num": 6,
+      "delta": {
+        "x": 174.29
+      },
+      "item": {
+        "type": "userImage",
+        "x": 844.25,
+        "y": 256.93,
+        "height": 160,
+        "width": 160
+      }
+    },
+    {
+      "type": "staticImage",
+      "x": 0,
+      "y": 0,
+      "width": 2200,
+      "height": 1485,
+      "url": "http://demo.ekuai.tech/cdn/31e7/1.png"
+    }
+  ]
+}

@@ -14,6 +14,22 @@ export const renderImage = template => {
   return canvas.toDataURL()
 }
 
+export const renderOutputImage = template => {
+  const canvas = document.createElement('canvas')
+  canvas.setAttribute('width', template.width)
+  canvas.setAttribute('height', template.height)
+  const ctx = canvas.getContext('2d')
+  for (const key in template.layer) {
+    const item = template.layer[key]
+    if (item.type === 'staticImage' || item.type === 'userImage') {
+      if (!item.placeholder) {
+        ctx.drawImage(item.img, item.x, item.y, item.width, item.height)
+      }
+    }
+  }
+  return canvas.toDataURL()
+}
+
 const getRandClr = () => {
   var r = Math.floor(Math.random() * 256)
   var g = Math.floor(Math.random() * 256)
@@ -43,12 +59,12 @@ const getEmptyImg = async (width, height) => {
 }
 
 export const getPreview = async template => {
-  const tdata = { ...template }
-  for (const key in tdata.layer) {
-    const layer = tdata.layer[key]
+  for (const key in template.layer) {
+    const layer = template.layer[key]
     if (!layer.img) {
       layer.img = await getEmptyImg(layer.width, layer.height)
+      layer.placeholder = true
     }
   }
-  return renderImage(tdata)
+  return renderImage(template)
 }

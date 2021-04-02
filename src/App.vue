@@ -29,11 +29,11 @@ export default {
       currentStep: 0,
       template: null
     })
-    const step1N = (e) => {
+    const step1N = e => {
       state.currentStep = 1
       state.template = e
     }
-    const step2N = (e) => {
+    const step2N = e => {
       state.currentStep = 2
       state.template = e
     }

@@ -12,6 +12,6 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'import/newline-after-import': ['error', { count: 1 }],
     'max-len': 'off',
-    // "vue/html-closing-bracket-newline":'off'
+    'arrow-parens': ['error', 'as-needed']
   }
 }

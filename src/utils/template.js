@@ -1,18 +1,13 @@
 import { getBlob } from './ajax'
 import { Blob2DataUrl, Blob2Text, getImageDOM } from './blob'
 
-// export const resolveTemplate = template => {
-//   for (const key in template) {
-//     const element = template[key]
-//   }
-// }
-
 export const resolveTemplate = async data => {
   const standardTemplate = {
     width: 100,
     height: 100,
     thumb: '',
-    layer: []
+    layer: [],
+    imageArea: []
   }
   for (const key in data) {
     if (key === 'layer') {
@@ -41,6 +36,14 @@ export const resolveTemplate = async data => {
           }
           imageDat.url = await Blob2DataUrl(imageDat.blob)
           layer.img = await getImageDOM(imageDat.url)
+        } else if (layer.type === 'userImage') {
+          standardTemplate.imageArea.push({
+            key: lid,
+            x: layer.x,
+            y: layer.y,
+            xM: layer.x + layer.width,
+            yM: layer.y + layer.height
+          })
         }
       }
     } else {
@@ -63,4 +66,14 @@ export const initTemplateFile = async file => {
     return { err: '文件损坏(502)' }
   }
   return data
+}
+
+export const getClickLayer = (imageArea, x, y) => {
+  for (const key in imageArea) {
+    const layer = imageArea[key]
+    if (x >= layer.x && x <= layer.xM && y >= layer.y && y <= layer.yM) {
+      return layer.key
+    }
+  }
+  return -1
 }
